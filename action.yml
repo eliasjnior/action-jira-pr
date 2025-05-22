@@ -19,6 +19,9 @@ inputs:
     description: "Whether to add the Jira ticket to the PR description"
     default: "true"
     required: false
+  none-ticket:
+    description: 'To ignore tickets like ABC-NONE, set the value to "NONE"'
+    required: false
 runs:
   using: node20
   main: "dist/index.js"

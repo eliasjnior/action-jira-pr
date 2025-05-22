@@ -7,6 +7,7 @@ const INPUT_SHOULD_ADD_JIRA_TICKET_TO_TITLE = "should-add-jira-ticket-to-title";
 const INPUT_SHOULD_ADD_JIRA_TICKET_TO_DESCRIPTION =
   "should-add-jira-ticket-to-description";
 const INPUT_JIRA_PROJECT_KEYS = "jira-project-keys";
+const INPUT_NONE_TICKET = "none-ticket";
 
 import {
   isEmptyObject,
@@ -46,13 +47,18 @@ export const jiraPr = async (context: Context) => {
     required: true,
   });
 
+  const noneTicket = core.getInput(INPUT_NONE_TICKET, {
+    required: false,
+  });
+
   const jiraProjectKeysArray = jiraProjectKeys
     .split(",")
     .map((key) => key.trim());
 
   const parsedBranchName = parseBranchJiraTicket(
     context.payload.pull_request.head.ref,
-    jiraProjectKeysArray
+    jiraProjectKeysArray,
+    noneTicket
   );
 
   // If the branch name does not match the Jira ticket regex, we should not add the Jira ticket to the PR.
@@ -71,7 +77,8 @@ export const jiraPr = async (context: Context) => {
     const prTitle = context.payload.pull_request.title ?? "";
     const parsedJiraTicket = parseTitleJiraTicket(
       prTitle,
-      jiraProjectKeysArray
+      jiraProjectKeysArray,
+      noneTicket
     );
 
     if (
@@ -90,7 +97,8 @@ export const jiraPr = async (context: Context) => {
     const prDescription = context.payload.pull_request.body ?? "";
     const parsedJiraTicket = parseDescriptionJiraTicket(
       prDescription,
-      jiraProjectKeysArray
+      jiraProjectKeysArray,
+      noneTicket
     );
 
     if (
