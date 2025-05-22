@@ -1,0 +1,26 @@
+{
+  "name": "action-jira-pr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "devDependencies": {
+    "@actions/exec": "^1.1.1",
+    "@types/node": "^22.15.21",
+    "esbuild": "^0.25.4",
+    "typescript": "^5.8.3",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1"
+  }
+}
