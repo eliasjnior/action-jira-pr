@@ -22,3 +22,4 @@ jobs:
           jira-project-keys: "PROJ1,PROJ2"
           should-add-jira-ticket-to-title: "true"
           should-add-jira-ticket-to-description: "true"
+          none-ticket: "NONE"

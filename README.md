@@ -1,4 +1,4 @@
-# Jira PR GitHub Action (test)
+# Jira PR GitHub Action
 
 A GitHub Action that automatically adds Jira ticket references to your Pull Request title and description.
 
