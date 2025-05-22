@@ -23975,7 +23975,10 @@ var jiraPr = async (context2) => {
     jiraAccount,
     shouldAddJiraTicketToTitle,
     shouldAddJiraTicketToDescription,
-    jiraProjectKeysArray
+    jiraProjectKeysArray,
+    pullRequest: context2.payload.pull_request,
+    headRef: context2.payload.pull_request.head.ref,
+    baseRef: context2.payload.pull_request.base.ref
   });
   const parsedBranchName = parseBranchJiraTicket(
     context2.payload.pull_request.head.ref,

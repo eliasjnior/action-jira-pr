@@ -55,6 +55,9 @@ export const jiraPr = async (context: Context) => {
     shouldAddJiraTicketToTitle,
     shouldAddJiraTicketToDescription,
     jiraProjectKeysArray,
+    pullRequest: context.payload.pull_request,
+    headRef: context.payload.pull_request.head.ref,
+    baseRef: context.payload.pull_request.base.ref,
   });
 
   const parsedBranchName = parseBranchJiraTicket(
