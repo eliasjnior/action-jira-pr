@@ -8,6 +8,5 @@ esbuild
     target: "node20",
     outfile: "dist/index.js",
     format: "cjs",
-    external: ["@actions/*"],
   })
   .catch(() => process.exit(1));

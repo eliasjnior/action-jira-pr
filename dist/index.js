@@ -23951,6 +23951,7 @@ var INPUT_SHOULD_ADD_JIRA_TICKET_TO_DESCRIPTION = "should-add-jira-ticket-to-des
 var INPUT_JIRA_PROJECT_KEYS = "jira-project-keys";
 var jiraPr = async (context2) => {
   if (!context2.payload.pull_request) {
+    console.log("Skipping because this is not a pull request");
     return;
   }
   const jiraAccount = core.getInput(INPUT_JIRA_ACCOUNT, { required: true });
@@ -23975,6 +23976,7 @@ var jiraPr = async (context2) => {
     jiraProjectKeysArray
   );
   if (!parsedBranchName) {
+    console.log("Skipping because there is no Jira ticket in the branch name");
     return;
   }
   const { projectKey, ticketNumber } = parsedBranchName;
@@ -24015,6 +24017,7 @@ ${cleanedDescription}`;
 };
 var run = async () => {
   if (!import_github.context.payload.pull_request) {
+    console.log("Skipping because this is not a pull request");
     return;
   }
   const githubToken = core.getInput(INPUT_GITHUB_TOKEN, { required: false });
@@ -24022,6 +24025,7 @@ var run = async () => {
   if (!result) {
     return;
   }
+  console.log("Updating PR with Jira ticket", result);
   const { updates, jiraTicketUrl, projectKey, ticketNumber } = result;
   const octokit = (0, import_github.getOctokit)(githubToken);
   if (!isEmptyObject(updates)) {
