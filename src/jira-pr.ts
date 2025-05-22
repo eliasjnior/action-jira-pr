@@ -23,6 +23,8 @@ type Updates = Partial<
 
 export const jiraPr = async (context: Context) => {
   if (!context.payload.pull_request) {
+    console.log("Skipping because this is not a pull request");
+
     return;
   }
 
@@ -48,6 +50,13 @@ export const jiraPr = async (context: Context) => {
     .split(",")
     .map((key) => key.trim());
 
+  console.log("Running with config", {
+    jiraAccount,
+    shouldAddJiraTicketToTitle,
+    shouldAddJiraTicketToDescription,
+    jiraProjectKeysArray,
+  });
+
   const parsedBranchName = parseBranchJiraTicket(
     context.payload.pull_request.head.ref,
     jiraProjectKeysArray
@@ -55,6 +64,8 @@ export const jiraPr = async (context: Context) => {
 
   // If the branch name does not match the Jira ticket regex, we should not add the Jira ticket to the PR.
   if (!parsedBranchName) {
+    console.log("Skipping because there is no Jira ticket in the branch name");
+
     return;
   }
 
@@ -113,6 +124,8 @@ export const jiraPr = async (context: Context) => {
 
 export const run = async () => {
   if (!context.payload.pull_request) {
+    console.log("Skipping because this is not a pull request");
+
     return;
   }
 
@@ -123,6 +136,8 @@ export const run = async () => {
   if (!result) {
     return;
   }
+
+  console.log("Updating PR with Jira ticket", result);
 
   const { updates, jiraTicketUrl, projectKey, ticketNumber } = result;
 

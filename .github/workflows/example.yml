@@ -1,0 +1,20 @@
+name: Example Workflow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  add-jira-ticket:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add Jira ticket to PR
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          jira-account: "your-jira-account"
+          jira-project-keys: "PROJ1,PROJ2"
+          should-add-jira-ticket-to-title: "true"
+          should-add-jira-ticket-to-description: "true"
