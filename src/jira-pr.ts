@@ -104,12 +104,17 @@ export const jiraPr = async (context: Context) => {
     if (
       !parsedJiraTicket ||
       parsedJiraTicket.projectKey !== projectKey ||
-      parsedJiraTicket.ticketNumber !== ticketNumber
+      parsedJiraTicket.ticketNumber !== ticketNumber ||
+      parsedJiraTicket.ticketNumber === noneTicket
     ) {
       const cleanedDescription = prDescription
         .replace(jiraDescriptionTicketRegex, "")
         .trim();
-      const newDescription = `<jira-link>[${projectKey}-${ticketNumber}](${jiraTicketUrl})</jira-link>\n\n${cleanedDescription}`;
+
+      const newDescription =
+        ticketNumber === noneTicket
+          ? cleanedDescription
+          : `<jira-link>[${projectKey}-${ticketNumber}](${jiraTicketUrl})</jira-link>\n\n${cleanedDescription}`;
 
       updates.body = newDescription;
     }

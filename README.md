@@ -1,4 +1,4 @@
-# Jira PR GitHub Action (test)
+# Jira PR GitHub Action
 
 A GitHub Action that automatically adds Jira ticket references to your Pull Request title and description.
 
@@ -33,17 +33,19 @@ jobs:
           jira-project-keys: "PROJ1,PROJ2"
           should-add-jira-ticket-to-title: "true"
           should-add-jira-ticket-to-description: "true"
+          none-ticket: "NONE"
 ```
 
 ## Inputs
 
-| Input                                   | Description                                          | Required | Default                       |
-| --------------------------------------- | ---------------------------------------------------- | -------- | ----------------------------- |
-| `github-token`                          | The token to use to authenticate with GitHub         | No       | `${{ secrets.GITHUB_TOKEN }}` |
-| `jira-account`                          | The Jira account to use                              | Yes      | -                             |
-| `jira-project-keys`                     | The Jira project keys to use (comma separated)       | Yes      | -                             |
-| `should-add-jira-ticket-to-title`       | Whether to add the Jira ticket to the PR title       | No       | `true`                        |
-| `should-add-jira-ticket-to-description` | Whether to add the Jira ticket to the PR description | No       | `true`                        |
+| Input                                   | Description                                              | Required | Default                       |
+| --------------------------------------- | -------------------------------------------------------- | -------- | ----------------------------- |
+| `github-token`                          | The token to use to authenticate with GitHub             | No       | `${{ secrets.GITHUB_TOKEN }}` |
+| `jira-account`                          | The Jira account to use                                  | Yes      | -                             |
+| `jira-project-keys`                     | The Jira project keys to use (comma separated)           | Yes      | -                             |
+| `should-add-jira-ticket-to-title`       | Whether to add the Jira ticket to the PR title           | No       | `true`                        |
+| `should-add-jira-ticket-to-description` | Whether to add the Jira ticket to the PR description     | No       | `true`                        |
+| `none-ticket`                           | To ignore tickets like ABC-NONE, set the value to "NONE" | No       | -                             |
 
 ## Development
 
