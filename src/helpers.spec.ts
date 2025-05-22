@@ -39,6 +39,13 @@ describe("helpers", () => {
         projectKey: "PR",
         ticketNumber: "123",
       });
+
+      expect(
+        parseBranchJiraTicket("AB1D-123-branch-name", ["AB1D"])
+      ).toStrictEqual({
+        projectKey: "AB1D",
+        ticketNumber: "123",
+      });
     });
 
     it("should return undefined if the branch name does not contain a Jira ticket", () => {

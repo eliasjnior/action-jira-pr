@@ -23875,9 +23875,9 @@ var core = __toESM(require_core());
 var import_github = __toESM(require_github());
 
 // src/constants.ts
-var jiraBranchTicketRegex = /^(?<projectKey>[A-Z]+)-(?<ticketNumber>\d+)/i;
-var jiraTitleTicketRegex = /^\[(?<projectKey>[A-Z]+)-(?<ticketNumber>\d+)\]/i;
-var jiraDescriptionTicketRegex = /<jira-link>\[(?<projectKey>[A-Z]+)-(?<ticketNumber>\d+)\]\((?<jiraTicketUrl>.*?)\)<\/jira-link>/i;
+var jiraBranchTicketRegex = /^(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)/i;
+var jiraTitleTicketRegex = /^\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)\]/i;
+var jiraDescriptionTicketRegex = /<jira-link>\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)\]\((?<jiraTicketUrl>.*?)\)<\/jira-link>/i;
 
 // src/helpers.ts
 var parseBranchJiraTicket = (text, projectKeys) => {
@@ -23951,7 +23951,7 @@ var INPUT_SHOULD_ADD_JIRA_TICKET_TO_DESCRIPTION = "should-add-jira-ticket-to-des
 var INPUT_JIRA_PROJECT_KEYS = "jira-project-keys";
 var jiraPr = async (context2) => {
   if (!context2.payload.pull_request) {
-    console.log("Skipping because this is not a pull request");
+    console.log("No pull request found");
     return;
   }
   const jiraAccount = core.getInput(INPUT_JIRA_ACCOUNT, { required: true });
@@ -23971,21 +23971,12 @@ var jiraPr = async (context2) => {
     required: true
   });
   const jiraProjectKeysArray = jiraProjectKeys.split(",").map((key) => key.trim());
-  console.log("Running with config", {
-    jiraAccount,
-    shouldAddJiraTicketToTitle,
-    shouldAddJiraTicketToDescription,
-    jiraProjectKeysArray,
-    pullRequest: context2.payload.pull_request,
-    headRef: context2.payload.pull_request.head.ref,
-    baseRef: context2.payload.pull_request.base.ref
-  });
   const parsedBranchName = parseBranchJiraTicket(
     context2.payload.pull_request.head.ref,
     jiraProjectKeysArray
   );
   if (!parsedBranchName) {
-    console.log("Skipping because there is no Jira ticket in the branch name");
+    console.log("No Jira ticket found in branch name");
     return;
   }
   const { projectKey, ticketNumber } = parsedBranchName;
@@ -24026,15 +24017,15 @@ ${cleanedDescription}`;
 };
 var run = async () => {
   if (!import_github.context.payload.pull_request) {
-    console.log("Skipping because this is not a pull request");
+    console.log("No pull request found");
     return;
   }
   const githubToken = core.getInput(INPUT_GITHUB_TOKEN, { required: false });
   const result = await jiraPr(import_github.context);
   if (!result) {
+    console.log("No result");
     return;
   }
-  console.log("Updating PR with Jira ticket", result);
   const { updates, jiraTicketUrl, projectKey, ticketNumber } = result;
   const octokit = (0, import_github.getOctokit)(githubToken);
   if (!isEmptyObject(updates)) {
