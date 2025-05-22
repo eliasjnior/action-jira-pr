@@ -14,9 +14,19 @@ describe("helpers", () => {
         ticketNumber: "123",
       });
 
+      expect(parseBranchJiraTicket("PR-NONE", ["PR"], "NONE")).toStrictEqual({
+        projectKey: "PR",
+        ticketNumber: "NONE",
+      });
+
       expect(parseBranchJiraTicket("pr-123", ["PR"])).toStrictEqual({
         projectKey: "PR",
         ticketNumber: "123",
+      });
+
+      expect(parseBranchJiraTicket("pr-none", ["PR"], "NONE")).toStrictEqual({
+        projectKey: "PR",
+        ticketNumber: "NONE",
       });
 
       expect(parseBranchJiraTicket("PR-123-branch-name", ["PR"])).toStrictEqual(
@@ -25,6 +35,13 @@ describe("helpers", () => {
           ticketNumber: "123",
         }
       );
+
+      expect(
+        parseBranchJiraTicket("PR-NONE-branch-name", ["PR"], "NONE")
+      ).toStrictEqual({
+        projectKey: "PR",
+        ticketNumber: "NONE",
+      });
 
       expect(parseBranchJiraTicket("pr-123-branch-name", ["PR"])).toStrictEqual(
         {
@@ -45,6 +62,13 @@ describe("helpers", () => {
       ).toStrictEqual({
         projectKey: "AB1D",
         ticketNumber: "123",
+      });
+
+      expect(
+        parseBranchJiraTicket("AB1D-NONE-branch-name", ["AB1D"], "NONE")
+      ).toStrictEqual({
+        projectKey: "AB1D",
+        ticketNumber: "NONE",
       });
     });
 

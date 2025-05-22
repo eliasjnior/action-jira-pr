@@ -23875,12 +23875,16 @@ var core = __toESM(require_core());
 var import_github = __toESM(require_github());
 
 // src/constants.ts
-var jiraBranchTicketRegex = /^(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)/i;
-var jiraTitleTicketRegex = /^\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)\]/i;
-var jiraDescriptionTicketRegex = /<jira-link>\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>\d+)\]\((?<jiraTicketUrl>.*?)\)<\/jira-link>/i;
+var jiraBranchTicketRegex = /^(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>[0-9A-Z]+)/i;
+var jiraTitleTicketRegex = /^\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>[0-9A-Z]+)\]/i;
+var jiraDescriptionTicketRegex = /<jira-link>\[(?<projectKey>[0-9A-Z]+)-(?<ticketNumber>[0-9A-Z]+)\]\((?<jiraTicketUrl>.*?)\)<\/jira-link>/i;
 
 // src/helpers.ts
-var parseBranchJiraTicket = (text, projectKeys) => {
+var onlyNumbersRegex = /^\d+$/;
+var isOnlyNumbers = (text) => {
+  return onlyNumbersRegex.test(text);
+};
+var parseBranchJiraTicket = (text, projectKeys, noneTicket) => {
   const matches = text.match(jiraBranchTicketRegex);
   if (!matches) {
     return;
@@ -23894,12 +23898,21 @@ var parseBranchJiraTicket = (text, projectKeys) => {
   if (!uppercaseProjectKeys.includes(projectKey)) {
     return;
   }
-  return {
-    projectKey,
-    ticketNumber
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber
+    };
+  }
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket
+    };
+  }
+  return false;
 };
-var parseTitleJiraTicket = (text, projectKeys) => {
+var parseTitleJiraTicket = (text, projectKeys, noneTicket) => {
   const matches = text.match(jiraTitleTicketRegex);
   if (!matches) {
     return;
@@ -23913,12 +23926,21 @@ var parseTitleJiraTicket = (text, projectKeys) => {
   if (!uppercaseProjectKeys.includes(projectKey)) {
     return;
   }
-  return {
-    projectKey,
-    ticketNumber
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber
+    };
+  }
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket
+    };
+  }
+  return false;
 };
-var parseDescriptionJiraTicket = (text, projectKeys) => {
+var parseDescriptionJiraTicket = (text, projectKeys, noneTicket) => {
   const matches = text.match(jiraDescriptionTicketRegex);
   if (!matches) {
     return;
@@ -23933,11 +23955,21 @@ var parseDescriptionJiraTicket = (text, projectKeys) => {
   if (!uppercaseProjectKeys.includes(projectKey)) {
     return;
   }
-  return {
-    projectKey,
-    ticketNumber,
-    jiraTicketUrl
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber,
+      jiraTicketUrl
+    };
+  }
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket,
+      jiraTicketUrl
+    };
+  }
+  return false;
 };
 var isEmptyObject = (obj) => {
   return Object.keys(obj).length === 0;
@@ -23949,6 +23981,7 @@ var INPUT_JIRA_ACCOUNT = "jira-account";
 var INPUT_SHOULD_ADD_JIRA_TICKET_TO_TITLE = "should-add-jira-ticket-to-title";
 var INPUT_SHOULD_ADD_JIRA_TICKET_TO_DESCRIPTION = "should-add-jira-ticket-to-description";
 var INPUT_JIRA_PROJECT_KEYS = "jira-project-keys";
+var INPUT_NONE_TICKET = "none-ticket";
 var jiraPr = async (context2) => {
   if (!context2.payload.pull_request) {
     console.log("No pull request found");
@@ -23970,10 +24003,14 @@ var jiraPr = async (context2) => {
   const jiraProjectKeys = core.getInput(INPUT_JIRA_PROJECT_KEYS, {
     required: true
   });
+  const noneTicket = core.getInput(INPUT_NONE_TICKET, {
+    required: false
+  });
   const jiraProjectKeysArray = jiraProjectKeys.split(",").map((key) => key.trim());
   const parsedBranchName = parseBranchJiraTicket(
     context2.payload.pull_request.head.ref,
-    jiraProjectKeysArray
+    jiraProjectKeysArray,
+    noneTicket
   );
   if (!parsedBranchName) {
     console.log("No Jira ticket found in branch name");
@@ -23986,7 +24023,8 @@ var jiraPr = async (context2) => {
     const prTitle = context2.payload.pull_request.title ?? "";
     const parsedJiraTicket = parseTitleJiraTicket(
       prTitle,
-      jiraProjectKeysArray
+      jiraProjectKeysArray,
+      noneTicket
     );
     if (!parsedJiraTicket || parsedJiraTicket.projectKey !== projectKey || parsedJiraTicket.ticketNumber !== ticketNumber) {
       const cleanedTitle = prTitle.replace(jiraTitleTicketRegex, "").trim();
@@ -23998,7 +24036,8 @@ var jiraPr = async (context2) => {
     const prDescription = context2.payload.pull_request.body ?? "";
     const parsedJiraTicket = parseDescriptionJiraTicket(
       prDescription,
-      jiraProjectKeysArray
+      jiraProjectKeysArray,
+      noneTicket
     );
     if (!parsedJiraTicket || parsedJiraTicket.projectKey !== projectKey || parsedJiraTicket.ticketNumber !== ticketNumber) {
       const cleanedDescription = prDescription.replace(jiraDescriptionTicketRegex, "").trim();

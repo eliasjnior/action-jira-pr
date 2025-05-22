@@ -4,7 +4,17 @@ import {
   jiraTitleTicketRegex,
 } from "./constants";
 
-export const parseBranchJiraTicket = (text: string, projectKeys: string[]) => {
+const onlyNumbersRegex = /^\d+$/;
+
+const isOnlyNumbers = (text: string) => {
+  return onlyNumbersRegex.test(text);
+};
+
+export const parseBranchJiraTicket = (
+  text: string,
+  projectKeys: string[],
+  noneTicket?: string
+) => {
   const matches = text.match(jiraBranchTicketRegex);
 
   if (!matches) {
@@ -24,13 +34,28 @@ export const parseBranchJiraTicket = (text: string, projectKeys: string[]) => {
     return;
   }
 
-  return {
-    projectKey,
-    ticketNumber,
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber,
+    };
+  }
+
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket,
+    };
+  }
+
+  return false;
 };
 
-export const parseTitleJiraTicket = (text: string, projectKeys: string[]) => {
+export const parseTitleJiraTicket = (
+  text: string,
+  projectKeys: string[],
+  noneTicket?: string
+) => {
   const matches = text.match(jiraTitleTicketRegex);
 
   if (!matches) {
@@ -50,15 +75,27 @@ export const parseTitleJiraTicket = (text: string, projectKeys: string[]) => {
     return;
   }
 
-  return {
-    projectKey,
-    ticketNumber,
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber,
+    };
+  }
+
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket,
+    };
+  }
+
+  return false;
 };
 
 export const parseDescriptionJiraTicket = (
   text: string,
-  projectKeys: string[]
+  projectKeys: string[],
+  noneTicket?: string
 ) => {
   const matches = text.match(jiraDescriptionTicketRegex);
 
@@ -80,11 +117,23 @@ export const parseDescriptionJiraTicket = (
     return;
   }
 
-  return {
-    projectKey,
-    ticketNumber,
-    jiraTicketUrl,
-  };
+  if (isOnlyNumbers(ticketNumber)) {
+    return {
+      projectKey,
+      ticketNumber,
+      jiraTicketUrl,
+    };
+  }
+
+  if (noneTicket && ticketNumber === noneTicket.toUpperCase()) {
+    return {
+      projectKey,
+      ticketNumber: noneTicket,
+      jiraTicketUrl,
+    };
+  }
+
+  return false;
 };
 
 export const isEmptyObject = (obj: Record<string, unknown>) => {
