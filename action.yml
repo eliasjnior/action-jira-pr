@@ -1,0 +1,24 @@
+name: "Jira PR"
+author: "Elias Júnior"
+description: "Add the Jira ticket to the PR title and description"
+inputs:
+  github-token:
+    description: "The token to use to authenticate with GitHub"
+    required: true
+  jira-account:
+    description: "The Jira account to use"
+    required: true
+  jira-project-keys:
+    description: "The Jira project keys to use (comma separated)"
+    required: true
+  should-add-jira-ticket-to-title:
+    description: "Whether to add the Jira ticket to the PR title"
+    default: "true"
+    required: false
+  should-add-jira-ticket-to-description:
+    description: "Whether to add the Jira ticket to the PR description"
+    default: "true"
+    required: false
+runs:
+  using: node20
+  main: "dist/index.js"
