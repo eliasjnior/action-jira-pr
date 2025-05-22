@@ -4,8 +4,7 @@ description: "Add the Jira ticket to the PR title and description"
 inputs:
   github-token:
     description: "The token to use to authenticate with GitHub"
-    default: ${{ env.GITHUB_TOKEN }}
-    required: false
+    required: true
   jira-account:
     description: "The Jira account to use"
     required: true
