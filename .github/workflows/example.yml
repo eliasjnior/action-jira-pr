@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   add-jira-ticket:
     runs-on: ubuntu-latest
