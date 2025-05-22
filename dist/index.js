@@ -23971,6 +23971,12 @@ var jiraPr = async (context2) => {
     required: true
   });
   const jiraProjectKeysArray = jiraProjectKeys.split(",").map((key) => key.trim());
+  console.log("Running with config", {
+    jiraAccount,
+    shouldAddJiraTicketToTitle,
+    shouldAddJiraTicketToDescription,
+    jiraProjectKeysArray
+  });
   const parsedBranchName = parseBranchJiraTicket(
     context2.payload.pull_request.head.ref,
     jiraProjectKeysArray
